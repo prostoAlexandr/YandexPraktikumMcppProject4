@@ -19,7 +19,7 @@ TEST(ParamsCountCheck, CommentsPyTest) {
     EXPECT_EQ(params_counts.size(), test.size());
     std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -29,7 +29,7 @@ TEST(ParamsCountCheck, ExceptionsPyTest) {
     EXPECT_EQ(params_counts.size(), test.size());
     std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -39,7 +39,7 @@ TEST(ParamsCountCheck, IfPyTest) {
     EXPECT_EQ(params_counts.size(), test.size());
     std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -49,7 +49,7 @@ TEST(ParamsCountCheck, LoopsPyTest) {
     EXPECT_EQ(params_counts.size(), test.size());
     std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -59,7 +59,7 @@ TEST(ParamsCountCheck, ManyLinesPyTest) {
     EXPECT_EQ(params_counts.size(), test.size());
     std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -69,7 +69,7 @@ TEST(ParamsCountCheck, ManyParametersPyTest) {
     EXPECT_EQ(params_counts.size(), test.size());
     std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -79,7 +79,7 @@ TEST(ParamsCountCheck, MatchCasePyTest) {
     EXPECT_EQ(params_counts.size(), test.size());
     std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -89,7 +89,7 @@ TEST(ParamsCountCheck, NestedIfPyTest) {
     EXPECT_EQ(params_counts.size(), test.size());
     std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -99,7 +99,7 @@ TEST(ParamsCountCheck, SimplePyTest) {
     EXPECT_EQ(params_counts.size(), test.size());
     std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -109,7 +109,7 @@ TEST(ParamsCountCheck, TernaryPyTest) {
     EXPECT_EQ(params_counts.size(), test.size());
     std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 

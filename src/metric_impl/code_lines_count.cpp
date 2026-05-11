@@ -68,7 +68,7 @@ MetricResult::ValueType CodeLinesCountMetric::CalculateImpl(const function::Func
     // а тело функции начинается со следующей строки (обычно с отступа).
 
     auto filtered_strs = rv::iota(start_line + 1, end_line + 1) | rv::filter(is_code_line);
-    return rs::distance(filtered_strs);
+    return static_cast<int>(rs::distance(filtered_strs));
 }
 
 }  // namespace analyzer::metric::metric_impl

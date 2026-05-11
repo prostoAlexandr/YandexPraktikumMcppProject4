@@ -25,7 +25,7 @@ TEST(CodeLinesCheck, CommentsPyTest) {
     EXPECT_EQ(function_lines.size(), test.size());
     std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -35,7 +35,7 @@ TEST(CodeLinesCheck, ExceptionsPyTest) {
     EXPECT_EQ(function_lines.size(), test.size());
     std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -45,7 +45,7 @@ TEST(CodeLinesCheck, IfPyTest) {
     EXPECT_EQ(function_lines.size(), test.size());
     std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -55,7 +55,7 @@ TEST(CodeLinesCheck, LoopsPyTest) {
     EXPECT_EQ(function_lines.size(), test.size());
     std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -65,7 +65,7 @@ TEST(CodeLinesCheck, ManyLinesPyTest) {
     EXPECT_EQ(function_lines.size(), test.size());
     std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -75,7 +75,7 @@ TEST(CodeLinesCheck, ManyParametersPyTest) {
     EXPECT_EQ(function_lines.size(), test.size());
     std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -85,7 +85,7 @@ TEST(CodeLinesCheck, MatchCasePyTest) {
     EXPECT_EQ(function_lines.size(), test.size());
     std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -95,7 +95,7 @@ TEST(CodeLinesCheck, NestedIfPyTest) {
     EXPECT_EQ(function_lines.size(), test.size());
     std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -105,7 +105,7 @@ TEST(CodeLinesCheck, SimplePyTest) {
     EXPECT_EQ(function_lines.size(), test.size());
     std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -115,7 +115,7 @@ TEST(CodeLinesCheck, TernaryPyTest) {
     EXPECT_EQ(function_lines.size(), test.size());
     std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 

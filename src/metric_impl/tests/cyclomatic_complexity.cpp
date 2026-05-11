@@ -19,7 +19,7 @@ TEST(CyclomaticComplexityCheck, CommentsPyTest) {
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
     std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -29,7 +29,7 @@ TEST(CyclomaticComplexityCheck, ExceptionsPyTest) {
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
     std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -39,7 +39,7 @@ TEST(CyclomaticComplexityCheck, IfPyTest) {
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
     std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -49,7 +49,7 @@ TEST(CyclomaticComplexityCheck, LoopsPyTest) {
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
     std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -59,7 +59,7 @@ TEST(CyclomaticComplexityCheck, ManyLinesPyTest) {
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
     std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -69,7 +69,7 @@ TEST(CyclomaticComplexityCheck, ManyParametersPyTest) {
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
     std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -79,7 +79,7 @@ TEST(CyclomaticComplexityCheck, MatchCasePyTest) {
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
     std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -89,7 +89,7 @@ TEST(CyclomaticComplexityCheck, NestedIfPyTest) {
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
     std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -99,7 +99,7 @@ TEST(CyclomaticComplexityCheck, SimplePyTest) {
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
     std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
@@ -109,7 +109,7 @@ TEST(CyclomaticComplexityCheck, TernaryPyTest) {
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
     std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
         auto &[val, test_val] = pair;
-        EXPECT_EQ(val, test_val);
+        EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
