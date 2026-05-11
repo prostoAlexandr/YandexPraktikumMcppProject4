@@ -17,90 +17,100 @@ TEST(CyclomaticComplexityCheck, CommentsPyTest) {
     auto cyclomatic_complexity = cyclomatic_complexity_getter("comments.py");
     auto test = {1};
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    for (const auto &[val, test_val] : std::views::zip(cyclomatic_complexity, test)) {
+    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
+        auto &[val, test_val] = pair;
         EXPECT_EQ(val, test_val);
-    }
+    });
 }
 
 TEST(CyclomaticComplexityCheck, ExceptionsPyTest) {
     auto cyclomatic_complexity = cyclomatic_complexity_getter("exceptions.py");
     auto test = {4};
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    for (const auto &[val, test_val] : std::views::zip(cyclomatic_complexity, test)) {
+    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
+        auto &[val, test_val] = pair;
         EXPECT_EQ(val, test_val);
-    }
+    });
 }
 
 TEST(CyclomaticComplexityCheck, IfPyTest) {
     auto cyclomatic_complexity = cyclomatic_complexity_getter("if.py");
     auto test = {2};
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    for (const auto &[val, test_val] : std::views::zip(cyclomatic_complexity, test)) {
+    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
+        auto &[val, test_val] = pair;
         EXPECT_EQ(val, test_val);
-    }
+    });
 }
 
 TEST(CyclomaticComplexityCheck, LoopsPyTest) {
     auto cyclomatic_complexity = cyclomatic_complexity_getter("loops.py");
     auto test = {4};
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    for (const auto &[val, test_val] : std::views::zip(cyclomatic_complexity, test)) {
+    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
+        auto &[val, test_val] = pair;
         EXPECT_EQ(val, test_val);
-    }
+    });
 }
 
 TEST(CyclomaticComplexityCheck, ManyLinesPyTest) {
     auto cyclomatic_complexity = cyclomatic_complexity_getter("many_lines.py");
     auto test = {2};
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    for (const auto &[val, test_val] : std::views::zip(cyclomatic_complexity, test)) {
+    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
+        auto &[val, test_val] = pair;
         EXPECT_EQ(val, test_val);
-    }
+    });
 }
 
 TEST(CyclomaticComplexityCheck, ManyParametersPyTest) {
     auto cyclomatic_complexity = cyclomatic_complexity_getter("many_parameters.py");
     auto test = {2};
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    for (const auto &[val, test_val] : std::views::zip(cyclomatic_complexity, test)) {
+    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
+        auto &[val, test_val] = pair;
         EXPECT_EQ(val, test_val);
-    }
+    });
 }
 
 TEST(CyclomaticComplexityCheck, MatchCasePyTest) {
     auto cyclomatic_complexity = cyclomatic_complexity_getter("match_case.py");
     auto test = {4};
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    for (const auto &[val, test_val] : std::views::zip(cyclomatic_complexity, test)) {
+    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
+        auto &[val, test_val] = pair;
         EXPECT_EQ(val, test_val);
-    }
+    });
 }
 
 TEST(CyclomaticComplexityCheck, NestedIfPyTest) {
     auto cyclomatic_complexity = cyclomatic_complexity_getter("nested_if.py");
     auto test = {4};
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    for (const auto &[val, test_val] : std::views::zip(cyclomatic_complexity, test)) {
+    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
+        auto &[val, test_val] = pair;
         EXPECT_EQ(val, test_val);
-    }
+    });
 }
 
 TEST(CyclomaticComplexityCheck, SimplePyTest) {
     auto cyclomatic_complexity = cyclomatic_complexity_getter("simple.py");
     auto test = {2};
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    for (const auto &[val, test_val] : std::views::zip(cyclomatic_complexity, test)) {
+    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
+        auto &[val, test_val] = pair;
         EXPECT_EQ(val, test_val);
-    }
+    });
 }
 
 TEST(CyclomaticComplexityCheck, TernaryPyTest) {
     auto cyclomatic_complexity = cyclomatic_complexity_getter("ternary.py");
     auto test = {3};
     EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    for (const auto &[val, test_val] : std::views::zip(cyclomatic_complexity, test)) {
+    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
+        auto &[val, test_val] = pair;
         EXPECT_EQ(val, test_val);
-    }
+    });
 }
 
 }  // namespace analyzer::metric::metric_impl

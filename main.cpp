@@ -103,3 +103,44 @@ int main(int argc, char *argv[]) {
     print_accumulated_analysis(accumulator);
     return 0;
 }
+
+/*
+Analysis for every function:
+  ../files/sample.py::AdvancedProcessor::__init__:
+    Cyclomatic Complexity: 1
+    Code lines count: 2
+    Parameters count: 5
+  ../files/sample.py::AdvancedProcessor::process:
+    Cyclomatic Complexity: 1
+    Code lines count: 3
+    Parameters count: 6
+  ../files/sample.py::AdvancedProcessor::__call__:
+    Cyclomatic Complexity: 1
+    Code lines count: 2
+    Parameters count: 4
+  ../files/sample.py::lambda_demo:
+    Cyclomatic Complexity: 1
+    Code lines count: 6
+    Parameters count: 0
+
+Accumulated Analysis for file ../files/sample.py:
+    Sum Cyclomatic Complexity: 4
+    Average Cyclomatic Complexity per function: 1
+    Sum Code lines count: 13
+    Average Code lines count per function: 3.25
+    Average Parameters count per function: 3.75
+
+Accumulated Analysis for class AdvancedProcessor:
+    Sum Cyclomatic Complexity: 3
+    Average Cyclomatic Complexity per function: 1
+    Sum Code lines count: 7
+    Average Code lines count per function: 2.3333333333333335
+    Average Parameters count per function: 5
+
+Accumulated Analysis for All Functions:
+    Sum Cyclomatic Complexity: 4
+    Average Cyclomatic Complexity per function: 1
+    Sum Code lines count: 13
+    Average Code lines count per function: 3.25
+    Average Parameters count per function: 3.75
+*/

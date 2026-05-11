@@ -39,7 +39,7 @@ namespace rs = std::ranges;
  * 6. Возвращает вектор пар: (функция, результаты её метрик).
  */
 inline auto AnalyseFunctions(const std::vector<std::string> &files,
-                      const analyzer::metric::MetricExtractor &metric_extractor) {
+                             const analyzer::metric::MetricExtractor &metric_extractor) {
     return files | rv::transform([](const auto &file) { return function::FunctionExtractor().Get(file::File(file)); }) |
            rv::join | rv::transform([&metric_extractor](const auto &func) {
                return std::make_pair(func, metric_extractor.Get(func));
@@ -98,8 +98,8 @@ auto SplitByFiles(const auto &analysis) {
  */
 void AccumulateFunctionAnalysis(const auto &analysis,
                                 const analyzer::metric_accumulator::MetricsAccumulator &accumulator) {
-    std::ranges::for_each(
-        analysis, [&accumulator](const auto &pair) { accumulator.AccumulateNextFunctionResults(pair.second); });
+    std::ranges::for_each(analysis,
+                          [&accumulator](const auto &pair) { accumulator.AccumulateNextFunctionResults(pair.second); });
 }
 
 }  // namespace analyzer
