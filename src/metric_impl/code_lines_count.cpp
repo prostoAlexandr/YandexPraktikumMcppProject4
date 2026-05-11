@@ -67,7 +67,7 @@ MetricResult::ValueType CodeLinesCountMetric::CalculateImpl(const function::Func
     // Потому что первая строка — это строка с объявлением функции (def ...),
     // а тело функции начинается со следующей строки (обычно с отступа).
 
-    auto filtered_strs = rv::iota(start_line + 1, end_line) | rv::filter(is_code_line);
+    auto filtered_strs = rv::iota(start_line + 1, end_line + 1) | rv::filter(is_code_line);
     return rs::distance(filtered_strs);
 }
 

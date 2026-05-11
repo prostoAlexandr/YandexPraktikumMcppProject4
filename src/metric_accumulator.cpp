@@ -32,6 +32,12 @@ namespace analyzer::metric_accumulator {
  */
 void MetricsAccumulator::AccumulateNextFunctionResults(const std::vector<metric::MetricResult> &metric_results) const {
     // здесь ваш код
+    std::ranges::for_each(metric_results, [this](const auto &result) {
+        auto it = accumulators.find(result.metric_name);
+        if (it == accumulators.end())
+            return;
+        it->second->Accumulate(result);
+    });
 }
 /**
  * @brief Сбрасывает состояние всех аккумуляторов.
@@ -42,6 +48,7 @@ void MetricsAccumulator::AccumulateNextFunctionResults(const std::vector<metric:
  */
 void MetricsAccumulator::ResetAccumulators() {
     // здесь ваш код
+    std::ranges::for_each(accumulators, [](const auto& pair){pair.second->Reset();});
 }
 
 }  // namespace analyzer::metric_accumulator
