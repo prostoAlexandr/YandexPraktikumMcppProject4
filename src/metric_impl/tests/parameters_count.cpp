@@ -1,116 +1,43 @@
 #include "metric_impl/parameters_count.hpp"
+#include "metric_from_file_getter.hpp"
 
 #include <gtest/gtest.h>
 
 namespace analyzer::metric::metric_impl {
 
-// здесь ваш код
-auto params_count_getter = [](std::string sv) {
-    file::File file("/workspaces/YandexPraktikumMcppProject4/src/metric_impl/tests/files/" + sv);
-    analyzer::metric::metric_impl::CountParametersMetric lines_metric;
-    return function::FunctionExtractor{}.Get(file) |
-           std::views::transform([&lines_metric](auto &&func) { return lines_metric.Calculate(func).value; }) |
-           std::ranges::to<std::vector>();
-};
+// filename, expected result
+class ParemetersCountCheck : public ::testing::TestWithParam<std::pair<std::string, std::vector<int>>> {};
 
-TEST(ParamsCountCheck, CommentsPyTest) {
-    auto params_counts = params_count_getter("comments.py");
-    auto test = {3};
-    EXPECT_EQ(params_counts.size(), test.size());
-    std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
+TEST_P(ParemetersCountCheck, ParemetersCountCheck) {
+    auto [file, expected_val] = GetParam();
+
+    auto function_lines = metric_from_file<CountParametersMetric>(file);
+
+    EXPECT_EQ(function_lines.size(), expected_val.size());
+    std::ranges::for_each(std::views::zip(function_lines, expected_val), [](auto &&pair) {
         auto &[val, test_val] = pair;
+        ASSERT_TRUE(std::holds_alternative<int>(val));
         EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
-TEST(ParamsCountCheck, ExceptionsPyTest) {
-    auto params_counts = params_count_getter("exceptions.py");
-    auto test = {0};
-    EXPECT_EQ(params_counts.size(), test.size());
-    std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(ParamsCountCheck, IfPyTest) {
-    auto params_counts = params_count_getter("if.py");
-    auto test = {1};
-    EXPECT_EQ(params_counts.size(), test.size());
-    std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(ParamsCountCheck, LoopsPyTest) {
-    auto params_counts = params_count_getter("loops.py");
-    auto test = {1};
-    EXPECT_EQ(params_counts.size(), test.size());
-    std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(ParamsCountCheck, ManyLinesPyTest) {
-    auto params_counts = params_count_getter("many_lines.py");
-    auto test = {0};
-    EXPECT_EQ(params_counts.size(), test.size());
-    std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(ParamsCountCheck, ManyParametersPyTest) {
-    auto params_counts = params_count_getter("many_parameters.py");
-    auto test = {5};
-    EXPECT_EQ(params_counts.size(), test.size());
-    std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(ParamsCountCheck, MatchCasePyTest) {
-    auto params_counts = params_count_getter("match_case.py");
-    auto test = {1};
-    EXPECT_EQ(params_counts.size(), test.size());
-    std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(ParamsCountCheck, NestedIfPyTest) {
-    auto params_counts = params_count_getter("nested_if.py");
-    auto test = {2};
-    EXPECT_EQ(params_counts.size(), test.size());
-    std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(ParamsCountCheck, SimplePyTest) {
-    auto params_counts = params_count_getter("simple.py");
-    auto test = {0};
-    EXPECT_EQ(params_counts.size(), test.size());
-    std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(ParamsCountCheck, TernaryPyTest) {
-    auto params_counts = params_count_getter("ternary.py");
-    auto test = {1};
-    EXPECT_EQ(params_counts.size(), test.size());
-    std::ranges::for_each(std::views::zip(params_counts, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
+// clang-format off
+INSTANTIATE_TEST_SUITE_P(
+    BasicCases,
+    ParemetersCountCheck,
+    ::testing::Values(
+        std::make_pair("comments.py",           std::vector{3}),
+        std::make_pair("exceptions.py",         std::vector{0}),
+        std::make_pair("if.py",                 std::vector{1}),
+        std::make_pair("loops.py",              std::vector{1}),
+        std::make_pair("many_lines.py",         std::vector{0}),
+        std::make_pair("many_parameters.py",    std::vector{5}),
+        std::make_pair("match_case.py",         std::vector{1}),
+        std::make_pair("nested_if.py",          std::vector{2}),
+        std::make_pair("simple.py",             std::vector{0}),
+        std::make_pair("ternary.py",            std::vector{1})
+    )
+);
+// clang-format on
 
 }  // namespace analyzer::metric::metric_impl

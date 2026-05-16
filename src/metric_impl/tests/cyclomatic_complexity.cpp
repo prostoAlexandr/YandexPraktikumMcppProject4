@@ -1,116 +1,43 @@
 #include "metric_impl/cyclomatic_complexity.hpp"
+#include "metric_from_file_getter.hpp"
 
 #include <gtest/gtest.h>
 
 namespace analyzer::metric::metric_impl {
 
-// здесь ваш код
-auto cyclomatic_complexity_getter = [](std::string sv) {
-    file::File file("/workspaces/YandexPraktikumMcppProject4/src/metric_impl/tests/files/" + sv);
-    analyzer::metric::metric_impl::CyclomaticComplexityMetric lines_metric;
-    return function::FunctionExtractor{}.Get(file) |
-           std::views::transform([&lines_metric](auto &&func) { return lines_metric.Calculate(func).value; }) |
-           std::ranges::to<std::vector>();
-};
+// filename, expected result
+class CyclomaticComplexityCheck : public ::testing::TestWithParam<std::pair<std::string, std::vector<int>>> {};
 
-TEST(CyclomaticComplexityCheck, CommentsPyTest) {
-    auto cyclomatic_complexity = cyclomatic_complexity_getter("comments.py");
-    auto test = {1};
-    EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
+TEST_P(CyclomaticComplexityCheck, CyclomaticComplexityCheck) {
+    auto [file, expected_val] = GetParam();
+
+    auto function_lines = metric_from_file<CyclomaticComplexityMetric>(file);
+
+    EXPECT_EQ(function_lines.size(), expected_val.size());
+    std::ranges::for_each(std::views::zip(function_lines, expected_val), [](auto &&pair) {
         auto &[val, test_val] = pair;
+        ASSERT_TRUE(std::holds_alternative<int>(val));
         EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
-TEST(CyclomaticComplexityCheck, ExceptionsPyTest) {
-    auto cyclomatic_complexity = cyclomatic_complexity_getter("exceptions.py");
-    auto test = {4};
-    EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CyclomaticComplexityCheck, IfPyTest) {
-    auto cyclomatic_complexity = cyclomatic_complexity_getter("if.py");
-    auto test = {2};
-    EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CyclomaticComplexityCheck, LoopsPyTest) {
-    auto cyclomatic_complexity = cyclomatic_complexity_getter("loops.py");
-    auto test = {4};
-    EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CyclomaticComplexityCheck, ManyLinesPyTest) {
-    auto cyclomatic_complexity = cyclomatic_complexity_getter("many_lines.py");
-    auto test = {2};
-    EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CyclomaticComplexityCheck, ManyParametersPyTest) {
-    auto cyclomatic_complexity = cyclomatic_complexity_getter("many_parameters.py");
-    auto test = {2};
-    EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CyclomaticComplexityCheck, MatchCasePyTest) {
-    auto cyclomatic_complexity = cyclomatic_complexity_getter("match_case.py");
-    auto test = {4};
-    EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CyclomaticComplexityCheck, NestedIfPyTest) {
-    auto cyclomatic_complexity = cyclomatic_complexity_getter("nested_if.py");
-    auto test = {4};
-    EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CyclomaticComplexityCheck, SimplePyTest) {
-    auto cyclomatic_complexity = cyclomatic_complexity_getter("simple.py");
-    auto test = {2};
-    EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CyclomaticComplexityCheck, TernaryPyTest) {
-    auto cyclomatic_complexity = cyclomatic_complexity_getter("ternary.py");
-    auto test = {3};
-    EXPECT_EQ(cyclomatic_complexity.size(), test.size());
-    std::ranges::for_each(std::views::zip(cyclomatic_complexity, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
+// clang-format off
+INSTANTIATE_TEST_SUITE_P(
+    BasicCases,
+    CyclomaticComplexityCheck,
+    ::testing::Values(
+        std::make_pair("comments.py",           std::vector{1}),
+        std::make_pair("exceptions.py",         std::vector{4}),
+        std::make_pair("if.py",                 std::vector{2}),
+        std::make_pair("loops.py",              std::vector{4}),
+        std::make_pair("many_lines.py",         std::vector{2}),
+        std::make_pair("many_parameters.py",    std::vector{2}),
+        std::make_pair("match_case.py",         std::vector{4}),
+        std::make_pair("nested_if.py",          std::vector{4}),
+        std::make_pair("simple.py",             std::vector{2}),
+        std::make_pair("ternary.py",            std::vector{3})
+    )
+);
+// clang-format on
 
 }  // namespace analyzer::metric::metric_impl

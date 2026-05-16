@@ -1,117 +1,46 @@
 #include "metric_impl/naming_style.hpp"
+#include "metric_from_file_getter.hpp"
 
 #include <gtest/gtest.h>
 #include <string>
 
 namespace analyzer::metric::metric_impl {
 
-// здесь ваш код
-auto naming_style_getter = [](std::string sv) {
-    file::File file("/workspaces/YandexPraktikumMcppProject4/src/metric_impl/tests/files/" + sv);
-    analyzer::metric::metric_impl::NamingStyleMetric lines_metric;
-    return function::FunctionExtractor{}.Get(file) |
-           std::views::transform([&lines_metric](auto &&func) { return lines_metric.Calculate(func).value; }) |
-           std::ranges::to<std::vector>();
-};
+// filename, expected result
+class NamingStyleCheck : public ::testing::TestWithParam<std::pair<std::string, std::vector<std::string>>> {};
 
-TEST(NamingStyleCheck, CommentsPyTest) {
-    auto naming_style = naming_style_getter("comments.py");
-    auto test = {"Unknown"};
-    EXPECT_EQ(naming_style.size(), test.size());
-    std::ranges::for_each(std::views::zip(naming_style, test), [](auto &&pair) {
+TEST_P(NamingStyleCheck, NamingStyleCheck) {
+    auto [file, expected_val] = GetParam();
+
+    auto function_lines = metric_from_file<NamingStyleMetric>(file);
+
+    EXPECT_EQ(function_lines.size(), expected_val.size());
+    std::ranges::for_each(std::views::zip(function_lines, expected_val), [](auto &&pair) {
         auto &[val, test_val] = pair;
+        ASSERT_TRUE(std::holds_alternative<std::string>(val));
         EXPECT_EQ(std::get<std::string>(val), test_val);
     });
 }
 
-TEST(NamingStyleCheck, ExceptionsPyTest) {
-    auto naming_style = naming_style_getter("exceptions.py");
-    auto test = {"Unknown"};
-    EXPECT_EQ(naming_style.size(), test.size());
-    std::ranges::for_each(std::views::zip(naming_style, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<std::string>(val), test_val);
-    });
-}
+using namespace std::string_literals;
 
-TEST(NamingStyleCheck, IfPyTest) {
-    auto naming_style = naming_style_getter("if.py");
-    auto test = {"Camel Case"};
-    EXPECT_EQ(naming_style.size(), test.size());
-    std::ranges::for_each(std::views::zip(naming_style, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<std::string>(val), test_val);
-    });
-}
-
-TEST(NamingStyleCheck, LoopsPyTest) {
-    auto naming_style = naming_style_getter("loops.py");
-    auto test = {"Pascal Case"};
-    EXPECT_EQ(naming_style.size(), test.size());
-    std::ranges::for_each(std::views::zip(naming_style, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<std::string>(val), test_val);
-    });
-}
-
-TEST(NamingStyleCheck, ManyLinesPyTest) {
-    auto naming_style = naming_style_getter("many_lines.py");
-    auto test = {"Lower Case"};
-    EXPECT_EQ(naming_style.size(), test.size());
-    std::ranges::for_each(std::views::zip(naming_style, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<std::string>(val), test_val);
-    });
-}
-
-TEST(NamingStyleCheck, ManyParametersPyTest) {
-    auto naming_style = naming_style_getter("many_parameters.py");
-    auto test = {"Snake Case"};
-    EXPECT_EQ(naming_style.size(), test.size());
-    std::ranges::for_each(std::views::zip(naming_style, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<std::string>(val), test_val);
-    });
-}
-
-TEST(NamingStyleCheck, MatchCasePyTest) {
-    auto naming_style = naming_style_getter("match_case.py");
-    auto test = {"Unknown"};
-    EXPECT_EQ(naming_style.size(), test.size());
-    std::ranges::for_each(std::views::zip(naming_style, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<std::string>(val), test_val);
-    });
-}
-
-TEST(NamingStyleCheck, NestedIfPyTest) {
-    auto naming_style = naming_style_getter("nested_if.py");
-    auto test = {"Pascal Case"};
-    EXPECT_EQ(naming_style.size(), test.size());
-    std::ranges::for_each(std::views::zip(naming_style, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<std::string>(val), test_val);
-    });
-}
-
-TEST(NamingStyleCheck, SimplePyTest) {
-    auto naming_style = naming_style_getter("simple.py");
-    auto test = {"Snake Case"};
-    EXPECT_EQ(naming_style.size(), test.size());
-    std::ranges::for_each(std::views::zip(naming_style, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<std::string>(val), test_val);
-    });
-}
-
-TEST(NamingStyleCheck, TernaryPyTest) {
-    auto naming_style = naming_style_getter("ternary.py");
-    auto test = {"Unknown"};
-    EXPECT_EQ(naming_style.size(), test.size());
-    std::ranges::for_each(std::views::zip(naming_style, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<std::string>(val), test_val);
-    });
-}
+// clang-format off
+INSTANTIATE_TEST_SUITE_P(
+    BasicCases,
+    NamingStyleCheck,
+    ::testing::Values(
+        std::make_pair("comments.py",           std::vector{"Unknown"s}),
+        std::make_pair("exceptions.py",         std::vector{"Unknown"s}),
+        std::make_pair("if.py",                 std::vector{"Camel Case"s}),
+        std::make_pair("loops.py",              std::vector{"Pascal Case"s}),
+        std::make_pair("many_lines.py",         std::vector{"Lower Case"s}),
+        std::make_pair("many_parameters.py",    std::vector{"Snake Case"s}),
+        std::make_pair("match_case.py",         std::vector{"Unknown"s}),
+        std::make_pair("nested_if.py",          std::vector{"Pascal Case"s}),
+        std::make_pair("simple.py",             std::vector{"Snake Case"s}),
+        std::make_pair("ternary.py",            std::vector{"Unknown"s})
+    )
+);
+// clang-format on
 
 }  // namespace analyzer::metric::metric_impl

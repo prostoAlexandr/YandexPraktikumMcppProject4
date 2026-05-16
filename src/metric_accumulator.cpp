@@ -1,5 +1,6 @@
 #include "metric_accumulator.hpp"
 
+#include <stdexcept>
 #include <unistd.h>
 
 #include <algorithm>
@@ -35,7 +36,7 @@ void MetricsAccumulator::AccumulateNextFunctionResults(const std::vector<metric:
     std::ranges::for_each(metric_results, [this](const auto &result) {
         auto it = accumulators.find(result.metric_name);
         if (it == accumulators.end())
-            return;
+            throw std::runtime_error("Not found accumulator for " + result.metric_name);
         it->second->Accumulate(result);
     });
 }

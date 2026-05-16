@@ -1,6 +1,7 @@
 #include "metric_impl/cyclomatic_complexity.hpp"
 #include "metric.hpp"
 
+#include <string_view>
 #include <unistd.h>
 
 #include <algorithm>
@@ -67,13 +68,18 @@ MetricResult::ValueType CyclomaticComplexityMetric::CalculateImpl(const function
     // а не с исходным кодом напрямую).
 
     int complexity = 1;
-    auto _ = rs::for_each(complexity_nodes, [&complexity, &function_ast](const auto sv) {
-        size_t search_start = 0;
-        while ((search_start = function_ast.find(sv, search_start)) != std::string::npos) {
-            ++complexity;
-            search_start += sv.size();
-        }
-    });
+    // Better cache locality
+    for (auto&& line : function_ast | std::views::split('\n'))
+    {
+        auto str = std::string_view(line);
+        auto _ = rs::for_each(complexity_nodes, [&complexity, &str](const auto sv) {
+            size_t search_start = 0;
+            while ((search_start = str.find(sv, search_start)) != std::string::npos) {
+                ++complexity;
+                search_start += sv.size();
+            }
+        });
+    };
     return complexity;
 }
 }  // namespace analyzer::metric::metric_impl

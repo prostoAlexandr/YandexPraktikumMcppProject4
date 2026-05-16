@@ -1,6 +1,7 @@
 #include "metric_impl/code_lines_count.hpp"
 #include "file.hpp"
 #include "function.hpp"
+#include "metric_from_file_getter.hpp"
 
 #include <algorithm>
 #include <gtest/gtest.h>
@@ -10,113 +11,39 @@
 
 namespace analyzer::metric::metric_impl {
 
-// здесь ваш код
-auto lines_count_getter = [](std::string sv) {
-    file::File file("/workspaces/YandexPraktikumMcppProject4/src/metric_impl/tests/files/" + sv);
-    analyzer::metric::metric_impl::CodeLinesCountMetric lines_metric;
-    return function::FunctionExtractor{}.Get(file) |
-           std::views::transform([&lines_metric](auto &&func) { return lines_metric.Calculate(func).value; }) |
-           std::ranges::to<std::vector>();
-};
+// filename, expected result
+class CodeLinesCheck : public ::testing::TestWithParam<std::pair<std::string, std::vector<int>>> {};
 
-TEST(CodeLinesCheck, CommentsPyTest) {
-    auto function_lines = lines_count_getter("comments.py");
-    auto test = {3};
-    EXPECT_EQ(function_lines.size(), test.size());
-    std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
+TEST_P(CodeLinesCheck, CodeLinesCheck) {
+    auto [file, expected_val] = GetParam();
+
+    auto function_lines = metric_from_file<CodeLinesCountMetric>(file);
+
+    EXPECT_EQ(function_lines.size(), expected_val.size());
+    std::ranges::for_each(std::views::zip(function_lines, expected_val), [](auto &&pair) {
         auto &[val, test_val] = pair;
+        ASSERT_TRUE(std::holds_alternative<int>(val));
         EXPECT_EQ(std::get<int>(val), test_val);
     });
 }
 
-TEST(CodeLinesCheck, ExceptionsPyTest) {
-    auto function_lines = lines_count_getter("exceptions.py");
-    auto test = {7};
-    EXPECT_EQ(function_lines.size(), test.size());
-    std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CodeLinesCheck, IfPyTest) {
-    auto function_lines = lines_count_getter("if.py");
-    auto test = {3};
-    EXPECT_EQ(function_lines.size(), test.size());
-    std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CodeLinesCheck, LoopsPyTest) {
-    auto function_lines = lines_count_getter("loops.py");
-    auto test = {6};
-    EXPECT_EQ(function_lines.size(), test.size());
-    std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CodeLinesCheck, ManyLinesPyTest) {
-    auto function_lines = lines_count_getter("many_lines.py");
-    auto test = {11};
-    EXPECT_EQ(function_lines.size(), test.size());
-    std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CodeLinesCheck, ManyParametersPyTest) {
-    auto function_lines = lines_count_getter("many_parameters.py");
-    auto test = {1};
-    EXPECT_EQ(function_lines.size(), test.size());
-    std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CodeLinesCheck, MatchCasePyTest) {
-    auto function_lines = lines_count_getter("match_case.py");
-    auto test = {7};
-    EXPECT_EQ(function_lines.size(), test.size());
-    std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CodeLinesCheck, NestedIfPyTest) {
-    auto function_lines = lines_count_getter("nested_if.py");
-    auto test = {8};
-    EXPECT_EQ(function_lines.size(), test.size());
-    std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CodeLinesCheck, SimplePyTest) {
-    auto function_lines = lines_count_getter("simple.py");
-    auto test = {5};
-    EXPECT_EQ(function_lines.size(), test.size());
-    std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
-
-TEST(CodeLinesCheck, TernaryPyTest) {
-    auto function_lines = lines_count_getter("ternary.py");
-    auto test = {1};
-    EXPECT_EQ(function_lines.size(), test.size());
-    std::ranges::for_each(std::views::zip(function_lines, test), [](auto &&pair) {
-        auto &[val, test_val] = pair;
-        EXPECT_EQ(std::get<int>(val), test_val);
-    });
-}
+// clang-format off
+INSTANTIATE_TEST_SUITE_P(
+    BasicCases,
+    CodeLinesCheck,
+    ::testing::Values(
+        std::make_pair("comments.py",           std::vector{3}),
+        std::make_pair("exceptions.py",         std::vector{7}),
+        std::make_pair("if.py",                 std::vector{3}),
+        std::make_pair("loops.py",              std::vector{6}),
+        std::make_pair("many_lines.py",         std::vector{11}),
+        std::make_pair("many_parameters.py",    std::vector{1}),
+        std::make_pair("match_case.py",         std::vector{7}),
+        std::make_pair("nested_if.py",          std::vector{8}),
+        std::make_pair("simple.py",             std::vector{5}),
+        std::make_pair("ternary.py",            std::vector{1})
+    )
+);
+// clang-format on
 
 }  // namespace analyzer::metric::metric_impl
