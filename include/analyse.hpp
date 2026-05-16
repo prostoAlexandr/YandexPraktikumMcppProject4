@@ -38,13 +38,17 @@ namespace rs = std::ranges;
  * 5. Для каждой функции вычисляет набор метрик через переданный `metric_extractor`.
  * 6. Возвращает вектор пар: (функция, результаты её метрик).
  */
-auto AnalyseFunctions(const std::vector<std::string> &files,
-                      const analyzer::metric::MetricExtractor &metric_extractor) {
-    // здесь ваш код
+inline auto AnalyseFunctions(const std::vector<std::string> &files,
+                             const analyzer::metric::MetricExtractor &metric_extractor) {
+    return files | rv::transform([](const auto &file) { return function::FunctionExtractor().Get(file::File(file)); }) |
+           rv::join | rv::transform([&metric_extractor](const auto &func) {
+               return std::make_pair(func, metric_extractor.Get(func));
+           }) |
+           rs::to<std::vector>();
 }
 
 /**
- * 
+ *
  * @brief Группирует результаты анализа по классам.
  *
  * Эта функция:
@@ -63,6 +67,10 @@ auto AnalyseFunctions(const std::vector<std::string> &files,
  */
 auto SplitByClasses(const auto &analysis) {
     // здесь ваш код
+    return analysis | rv::filter([](const auto &pair) { return pair.first.class_name.has_value(); }) |
+           rv::chunk_by([](const auto &lpair, const auto &rpair) {
+               return lpair.first.class_name.value() == rpair.first.class_name.value();
+           });
 }
 
 /**
@@ -75,6 +83,9 @@ auto SplitByClasses(const auto &analysis) {
  */
 auto SplitByFiles(const auto &analysis) {
     // здесь ваш код
+    return analysis | rv::chunk_by([](const auto &lpair, const auto &rpair) {
+               return lpair.first.filename == rpair.first.filename;
+           });
 }
 
 /**
@@ -87,7 +98,8 @@ auto SplitByFiles(const auto &analysis) {
  */
 void AccumulateFunctionAnalysis(const auto &analysis,
                                 const analyzer::metric_accumulator::MetricsAccumulator &accumulator) {
-    // здесь ваш код
+    std::ranges::for_each(analysis,
+                          [&accumulator](const auto &pair) { accumulator.AccumulateNextFunctionResults(pair.second); });
 }
 
 }  // namespace analyzer

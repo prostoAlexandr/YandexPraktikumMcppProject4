@@ -1,4 +1,4 @@
-#include "metric_accumulator_impl/average_accumulator.hpp"
+#include "test_data_producer.hpp"
 
 #include <gtest/gtest.h>
 
@@ -6,7 +6,30 @@
 
 namespace analyzer::metric_accumulator::metric_accumulator_impl::test {
 
-// здесь ваш код
-TEST(BasicCheck, Sum) { EXPECT_EQ(1 + 1, 2); }
+const auto metrics_vector = TestDataProducer<AverageAccumulator>::Metrics();
+
+TEST(AverageCase, RegularUsageCase) {
+    AverageAccumulator aac;
+    std::ranges::for_each(metrics_vector, [&aac](const auto &met) { aac.Accumulate(met); });
+    aac.Finalize();
+    EXPECT_DOUBLE_EQ(aac.Get(), 4.);
+}
+
+TEST(AverageCase, EmptyAccumulatorTest)
+{
+    AverageAccumulator aac;
+    aac.Finalize();
+    EXPECT_DOUBLE_EQ(aac.Get(), 0.);
+}
+
+TEST(AverageCase, ResetNothrowCase)
+{
+
+    AverageAccumulator aac;
+    std::ranges::for_each(metrics_vector, [&aac](const auto &met) { aac.Accumulate(met); });
+    aac.Reset();
+    aac.Finalize();
+    EXPECT_DOUBLE_EQ(aac.Get(), 0.);
+}
 
 }  // namespace analyzer::metric_accumulator::metric_accumulator_impl::test

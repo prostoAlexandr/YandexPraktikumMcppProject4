@@ -30,14 +30,14 @@ int main(int argc, char *argv[]) {
     analyzer::cmd::ProgramOptions options;
     if (!options.Parse(argc, argv))
         return 1;
-    using namespace analyser::metric::metric_impl;
-    analyser::metric::MetricExtractor metric_extractor;
+    using namespace analyzer::metric::metric_impl;
+    analyzer::metric::MetricExtractor metric_extractor;
     metric_extractor.RegisterMetric(std::make_unique<CyclomaticComplexityMetric>());
     metric_extractor.RegisterMetric(std::make_unique<CodeLinesCountMetric>());
     metric_extractor.RegisterMetric(std::make_unique<NamingStyleMetric>());
     metric_extractor.RegisterMetric(std::make_unique<CountParametersMetric>());
 
-    auto analysis = analyser::AnalyseFunctions(options.GetFiles(), metric_extractor);
+    auto analysis = analyzer::AnalyseFunctions(options.GetFiles(), metric_extractor);
 
     std::println("Analysis for every function:");
     std::ranges::for_each(analysis, [&](const auto &elem) {
@@ -50,8 +50,8 @@ int main(int argc, char *argv[]) {
         });
     });
 
-    analyser::metric_accumulator::MetricsAccumulator accumulator;
-    using namespace analyser::metric_accumulator::metric_accumulator_impl;
+    analyzer::metric_accumulator::MetricsAccumulator accumulator;
+    using namespace analyzer::metric_accumulator::metric_accumulator_impl;
     accumulator.RegisterAccumulator(CyclomaticComplexityMetric::kName, std::make_unique<SumAverageAccumulator>());
     accumulator.RegisterAccumulator(NamingStyleMetric::kName, std::make_unique<CategoricalAccumulator>());
     accumulator.RegisterAccumulator(CodeLinesCountMetric::kName, std::make_unique<SumAverageAccumulator>());
@@ -76,29 +76,70 @@ int main(int argc, char *argv[]) {
         std::println("    Average Parameters count per function: {}", cp_acc_metric.Get());
     };
 
-    auto analysis_by_files = analyser::SplitByFiles(analysis);
+    auto analysis_by_files = analyzer::SplitByFiles(analysis);
 
     std::ranges::for_each(analysis_by_files, [&accumulator, &print_accumulated_analysis](const auto &analysis) {
-        analyser::AccumulateFunctionAnalysis(analysis, accumulator);
+        analyzer::AccumulateFunctionAnalysis(analysis, accumulator);
         std::println();
         std::println("Accumulated Analysis for file {}:", analysis.front().first.filename);
         print_accumulated_analysis(accumulator);
         accumulator.ResetAccumulators();
     });
 
-    auto analysis_by_classes = analyser::SplitByClasses(analysis);
+    auto analysis_by_classes = analyzer::SplitByClasses(analysis);
 
     std::ranges::for_each(analysis_by_classes, [&accumulator, &print_accumulated_analysis](const auto &analysis) {
-        analyser::AccumulateFunctionAnalysis(analysis, accumulator);
+        analyzer::AccumulateFunctionAnalysis(analysis, accumulator);
         std::println();
-        std::println("Accumulated Analysis for сlass {}:", analysis.front().first.class_name.value());
+        std::println("Accumulated Analysis for class {}:", analysis.front().first.class_name.value());
         print_accumulated_analysis(accumulator);
         accumulator.ResetAccumulators();
     });
 
-    analyser::AccumulateFunctionAnalysis(analysis, accumulator);
+    analyzer::AccumulateFunctionAnalysis(analysis, accumulator);
     std::println();
     std::println("Accumulated Analysis for All Functions:");
     print_accumulated_analysis(accumulator);
     return 0;
 }
+
+/*
+Analysis for every function:
+  ../files/sample.py::AdvancedProcessor::__init__:
+    Cyclomatic Complexity: 1
+    Code lines count: 2
+    Parameters count: 5
+  ../files/sample.py::AdvancedProcessor::process:
+    Cyclomatic Complexity: 1
+    Code lines count: 3
+    Parameters count: 6
+  ../files/sample.py::AdvancedProcessor::__call__:
+    Cyclomatic Complexity: 1
+    Code lines count: 2
+    Parameters count: 4
+  ../files/sample.py::lambda_demo:
+    Cyclomatic Complexity: 1
+    Code lines count: 6
+    Parameters count: 0
+
+Accumulated Analysis for file ../files/sample.py:
+    Sum Cyclomatic Complexity: 4
+    Average Cyclomatic Complexity per function: 1
+    Sum Code lines count: 13
+    Average Code lines count per function: 3.25
+    Average Parameters count per function: 3.75
+
+Accumulated Analysis for class AdvancedProcessor:
+    Sum Cyclomatic Complexity: 3
+    Average Cyclomatic Complexity per function: 1
+    Sum Code lines count: 7
+    Average Code lines count per function: 2.3333333333333335
+    Average Parameters count per function: 5
+
+Accumulated Analysis for All Functions:
+    Sum Cyclomatic Complexity: 4
+    Average Cyclomatic Complexity per function: 1
+    Sum Code lines count: 13
+    Average Code lines count per function: 3.25
+    Average Parameters count per function: 3.75
+*/
